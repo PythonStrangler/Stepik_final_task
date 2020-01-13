@@ -29,3 +29,16 @@ class ProductPage(BasePage):
         basket_price = self.browser.find_element(*ProductPageLocators.PRICE_BASKET).text
         assert price == basket_price, \
             f"The price is not correct: '{price}' instead of '{basket_price}'"
+
+    def should_not_be_success_message(self):
+        # Абстрактный метод, который проверяет, что элемент не появляется на странице в течение заданного времени:
+        # is_not_element_present: упадет, как только увидит искомый элемент. Не появился: успех, тест зеленый.
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message is presented, but should not be"
+
+    def should_be_disappeared(self):
+        # проверить, что какой-то элемент исчезает, то следует воспользоваться явным ожиданием
+        # вместе с функцией until_not, в зависимости от того, какой результат мы ожидаем:
+        # is_disappeared: будет ждать до тех пор, пока элемент не исчезнет.
+        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message is presented, but should not be"

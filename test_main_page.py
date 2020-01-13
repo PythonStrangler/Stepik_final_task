@@ -23,4 +23,15 @@ def test_guest_should_see_login_page(browser):
     page = LoginPage(browser, link)
     page.open()
     page.should_be_login_page()
+
+
+# def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
+    # 1.Гость открывает главную страницу
+    # 2.Переходит в корзину по кнопке в шапке сайта
+    # 3.Ожидаем, что в корзине нет товаров
+    # 4.Ожидаем, что есть текст о том что корзина пуста
+    # todo чет надо а че хз
+
+
+
     # pytest -v --tb=line --language=en test_main_page.py
