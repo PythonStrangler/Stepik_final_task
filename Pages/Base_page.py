@@ -53,7 +53,7 @@ class BasePage:
 
         return True
 
-    # Следующие вде функции мы взяли из main_page:
+    # Следующие две функции мы взяли из main_page:
     def go_to_login_page(self):
         link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
         link.click()
@@ -61,4 +61,7 @@ class BasePage:
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
 
-    # todo В классе BasePage реализуйте соответствующий метод для перехода в корзину.
+    # В классе BasePage реализуйте соответствующий метод для перехода в корзину.
+    def go_to_basket_page(self):
+        link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
+        link.click()

@@ -1,5 +1,6 @@
 import pytest
 from .Pages.product_page import ProductPage
+from .Pages.basket_page import BasketPage
 
 
 @pytest.mark.parametrize('link', [0, 1, 2, 3, 4, 5, 6,
@@ -66,11 +67,17 @@ def test_message_disappeared_after_adding_product_to_basket(browser, link):
     page.should_be_disappeared()
 
 
-# def test_guest_cant_see_product_in_basket_opened_from_product_page(browser, link):
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     # 1.Гость открывает страницу товара
     # 2.Переходит в корзину по кнопке в шапке
     # 3.Ожидаем, что в корзине нет товаров
     # 4.Ожидаем, что есть текст о том что корзина пуста
-    # todo чет надо а че хз
+    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+    page = ProductPage(browser, link)
+    page.open()
+    page.go_to_basket_page()
+    basket_page = BasketPage(browser, browser.current_url)
+    basket_page.should_be_basket_page()
 
-    # pytest -v -s --tb=line --language=en test_product_page.py::test_message_disappeared_after_adding_product_to_basket
+    # pytest -v -s --tb=line --language=en test_product_page.py
+    # ::test_guest_cant_see_product_in_basket_opened_from_product_page
