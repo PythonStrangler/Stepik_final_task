@@ -1,18 +1,49 @@
+import time
 import pytest
 from .Pages.product_page import ProductPage
 from .Pages.basket_page import BasketPage
+from .Pages.login_page import LoginPage
 
 
+@pytest.mark.login_guest
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        email = str(time.time()) + "@fakemail.org"
+        password = "stepikonelove"
+        page = ProductPage(browser, link)
+        page.open()
+        page.go_to_login_page()
+        login_page = LoginPage(browser, browser.current_url)
+        login_page.register_new_user(email, password)
+
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = ProductPage(browser, link)
+        page.open()
+        page.should_be_basket_button()
+        page.add_to_basket_logined()
+        page.should_be_correct_name()
+        page.should_be_correct_price()
+
+    def test_user_cant_see_success_message(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = ProductPage(browser, link)
+        page.open()
+        page.should_not_be_success_message()
+
+
+@pytest.mark.need_review
 @pytest.mark.parametrize('link', [0, 1, 2, 3, 4, 5, 6,
                                   pytest.param(7, marks=pytest.mark.xfail),
                                   8, 9])
 def test_guest_can_add_product_to_basket(browser, link):
-    # link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
-    # "http://selenium1py.pythonanywhere.com/ru/catalogue/coders-at-work_207/?promo=newYear2019"
     link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{link}"
-    page = ProductPage(browser, link)  # инициализируем Page Object, передаем в конструктор экземпляр драйвера и url
-    page.open()  # открываем страницу
-    page.should_be_product_page()  # выполняем метод страницы - добавляем в корзину, вводим роверочный код
+    page = ProductPage(browser, link)
+    page.open()
+    page.should_be_product_page()
 
 
 @pytest.mark.parametrize('link', [pytest.param(0, marks=pytest.mark.xfail),
@@ -26,9 +57,6 @@ def test_guest_can_add_product_to_basket(browser, link):
                          pytest.param(8, marks=pytest.mark.xfail),
                          pytest.param(9, marks=pytest.mark.xfail)])
 def test_guest_cant_see_success_message_after_adding_product_to_basket(browser, link):
-    # Открываем страницу товара
-    # Добавляем товар в корзину
-    # Проверяем, что нет сообщения об успехе с помощью is_not_element_present
     link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{link}"
     page = ProductPage(browser, link)
     page.open()
@@ -38,8 +66,6 @@ def test_guest_cant_see_success_message_after_adding_product_to_basket(browser, 
 
 @pytest.mark.parametrize('link', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 def test_guest_cant_see_success_message(browser, link):
-    # Открываем страницу товара
-    # Проверяем, что нет сообщения об успехе с помощью is_not_element_present
     link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{link}"
     page = ProductPage(browser, link)
     page.open()
@@ -57,9 +83,6 @@ def test_guest_cant_see_success_message(browser, link):
                          pytest.param(8, marks=pytest.mark.xfail),
                          pytest.param(9, marks=pytest.mark.xfail)])
 def test_message_disappeared_after_adding_product_to_basket(browser, link):
-    # Открываем страницу товара
-    # Добавляем товар в корзину
-    # Проверяем, что нет сообщения об успехе с помощью is_disappeared
     link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{link}"
     page = ProductPage(browser, link)
     page.open()
@@ -67,17 +90,22 @@ def test_message_disappeared_after_adding_product_to_basket(browser, link):
     page.should_be_disappeared()
 
 
+@pytest.mark.need_review
+def test_guest_can_go_to_login_page_from_product_page(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+    page = ProductPage(browser, link)
+    page.open()
+    page.should_be_login_link()
+    page.go_to_login_page()
+    login_page = LoginPage(browser, browser.current_url)
+    login_page.should_be_login_page()
+
+
+@pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
-    # 1.Гость открывает страницу товара
-    # 2.Переходит в корзину по кнопке в шапке
-    # 3.Ожидаем, что в корзине нет товаров
-    # 4.Ожидаем, что есть текст о том что корзина пуста
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     page = ProductPage(browser, link)
     page.open()
     page.go_to_basket_page()
     basket_page = BasketPage(browser, browser.current_url)
     basket_page.should_be_basket_page()
-
-    # pytest -v -s --tb=line --language=en test_product_page.py
-    # ::test_guest_cant_see_product_in_basket_opened_from_product_page

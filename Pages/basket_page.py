@@ -3,8 +3,6 @@ from .locators import BasketPageLocators
 
 
 class BasketPage(BasePage):
-    # Реализуйте там необходимые проверки, в том числе отрицательную, которую мы обсуждали в предыдущих шагах.
-    # Убедитесь, что тесты проходят и зафиксируйте изменения в коммите.
     def should_be_basket_page(self):
         self.should_be_basket_url()
         self.basket_summary()
